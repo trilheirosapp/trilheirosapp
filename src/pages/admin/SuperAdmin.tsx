@@ -666,14 +666,14 @@ function PlanosTab() {
   const fetchData = async () => {
     const [{ data: orgsData }, { data: reqsData }] = await Promise.all([
       supabase.from('organizations').select('id, name, slug, plan, status, created_at, city, state').order('name'),
-      supabase.from('upgrade_requests').select('*').eq('status', 'pending').order('created_at', { ascending: true }),
+      supabase.from('upgrade_requests' as any).select('*').eq('status', 'pending').order('created_at', { ascending: true }) as any,
     ])
     setOrgs(orgsData ?? [])
 
     // Enrich requests with org info
-    const enriched = (reqsData ?? []).map(r => {
-      const org = (orgsData ?? []).find(o => o.id === r.organization_id)
-      return { ...r, org_name: org?.name, org_slug: org?.slug, org_plan: org?.plan }
+    const enriched = ((reqsData ?? []) as any[]).map((r: any) => {
+      const org = (orgsData ?? []).find((o: any) => o.id === r.organization_id)
+      return { ...r, org_name: org?.name, org_slug: org?.slug, org_plan: org?.plan } as UpgradeRequest
     })
     setUpgradeRequests(enriched)
     setLoading(false)
@@ -698,7 +698,7 @@ function PlanosTab() {
         if (error) throw error
         setOrgs(prev => prev.map(o => o.id === orgId ? { ...o, plan } : o))
       }
-      await supabase.from('upgrade_requests').update({ status: action, resolved_at: new Date().toISOString() }).eq('id', requestId)
+      await supabase.from('upgrade_requests' as any).update({ status: action, resolved_at: new Date().toISOString() }).eq('id', requestId)
       setUpgradeRequests(prev => prev.filter(r => r.id !== requestId))
       toast.success(action === 'approved' ? 'Upgrade aprovado!' : 'Solicitação rejeitada')
     } catch {

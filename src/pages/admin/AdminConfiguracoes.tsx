@@ -513,12 +513,12 @@ function UpgradeSection({ organizationId, currentPlan }: { organizationId: strin
 
   useEffect(() => {
     supabase
-      .from('upgrade_requests')
+      .from('upgrade_requests' as any)
       .select('id, requested_plan')
       .eq('organization_id', organizationId)
       .eq('status', 'pending')
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         setPendingRequest(data)
         setLoading(false)
       })
@@ -527,7 +527,7 @@ function UpgradeSection({ organizationId, currentPlan }: { organizationId: strin
   const handleRequest = async (plan: string) => {
     setRequesting(true)
     try {
-      const { error } = await supabase.from('upgrade_requests').insert({
+      const { error } = await supabase.from('upgrade_requests' as any).insert({
         organization_id: organizationId,
         requested_plan: plan,
       })

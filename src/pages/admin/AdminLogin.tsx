@@ -1,11 +1,9 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import { useOrganization } from '@/contexts/OrganizationContext'
 import { toast } from 'sonner'
 
 export default function AdminLogin() {
-  const navigate = useNavigate()
   const { organization } = useOrganization()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
